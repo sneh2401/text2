@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Design Search</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Design Search</h1>
+      <p>Upload a design to find similar images</p>
+
+      <form
+        action="/search"
+        method="POST"
+        enctype="multipart/form-data"
+        class="upload-form"
+      >
+        <div class="upload-wrapper">
+          <div class="upload-area">
+            <label for="upload-file" class="upload-label">
+              <p>Drop image here</p>
+              <p>or click to browse</p>
+            </label>
+            <input
+              type="file"
+              id="upload-file"
+              name="file"
+              accept="image/*"
+              required
+            />
+          </div>
+        </div>
+
+        <div id="file-info">
+          <p>No file selected</p>
+        </div>
+
+        <div class="limit-wrapper">
+          <label for="limit" class="limit-label"
+            >Number of Similar Images</label
+          >
+          <input
+            type="number"
+            id="limit"
+            name="limit"
+            value="5"
+            min="1"
+            max="20"
+            class="limit-input"
+          />
+        </div>
+
+        <div class="button-group">
+          <button type="submit" class="search-button">🔍 Search</button>
+          <button
+            type="button"
+            onclick="location.href='/index'"
+            class="index-button"
+          >
+            📂 Index Images
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script>
+      document
+        .getElementById("upload-file")
+        .addEventListener("change", function (e) {
+          const fileInfo = document.getElementById("file-info");
+          if (e.target.files.length > 0) {
+            fileInfo.innerHTML = `<p>Selected: ${e.target.files[0].name}</p>`;
+          } else {
+            fileInfo.innerHTML = "<p>No file selected</p>";
+          }
+        });
+    </script>
+  </body>
+</html>

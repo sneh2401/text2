@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perform Design Search</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Perform Design Search</h1>
+
+      <div class="back-button">
+        <button onclick="location.href='/'" class="back-btn">← Back</button>
+      </div>
+
+      <form
+        action="/search"
+        method="POST"
+        enctype="multipart/form-data"
+        class="search-form"
+      >
+        <div class="upload-wrapper">
+          <label for="file" class="upload-label">Choose Image File</label>
+          <input type="file" id="file" name="file" accept="image/*" required />
+        </div>
+
+        <div class="limit-wrapper">
+          <label for="limit" class="limit-label">Number of Results</label>
+          <input
+            type="number"
+            id="limit"
+            name="limit"
+            value="10"
+            min="1"
+            max="50"
+            class="limit-input"
+          />
+        </div>
+
+        <button type="submit" class="search-button">Search</button>
+      </form>
+    </div>
+  </body>
+</html>

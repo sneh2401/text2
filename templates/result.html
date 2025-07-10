@@ -1,0 +1,68 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Search Results</h1>
+        
+        <div class="back-button">
+            <button onclick="location.href='/search'" class="back-btn">← Back to Search</button>
+        </div>
+        
+        <div class="results-stats">
+            <div class="stat-item">
+                <span class="stat-number">{{ results|length if results else 0 }}</span>
+                <span class="stat-label">Results Found</span>
+            </div>
+            
+            {% if results %}
+            <div class="stat-item">
+                <span class="stat-number">{{ "%.3f"|format(results[0][0]) }}</span>
+                <span class="stat-label">Best Match</span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-number">{{ "%.3f"|format(results|sum(attribute=0)/results|length) }}</span>
+                <span class="stat-label">Avg Distance</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="results-grid">
+            {% if results %}
+                {% for result in results %}
+                <div class="result-item">
+                    <div class="result-header">
+                        <span class="result-rank">#{{ loop.index }}</span>
+                        <span class="result-distance">📏 Distance: {{ "%.4f"|format(result[0]) }}</span>
+                    </div>
+                    
+                    <div class="result-image-container">
+                        <img src="{{ url_for('static', filename='dataset/' + result[1]) }}" 
+                             alt="Similar image" 
+                             class="result-image"
+                             onerror="this.src='{{ url_for('static', filename='images/placeholder.png') }}'">
+                    </div>
+                    
+                    <div class="result-info">
+                        <span class="result-filename">📁 {{ result[1] }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-results">
+                    <div class="no-results-icon">🔍</div>
+                    <h3>No similar images found</h3>
+                    <p>Try uploading a different image or check if the dataset is indexed.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

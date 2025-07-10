@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Indexing</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Image Indexing</h1>
+
+      <div class="back-button">
+        <button onclick="location.href='/'" class="back-btn">← Back</button>
+      </div>
+
+      <div class="index-section">
+        <p>Index Images</p>
+        <p>
+          This process will analyze all images in the dataset folder and create
+          feature vectors for similarity search.
+        </p>
+
+        <button id="index-button" onclick="indexImages()" class="index-button">
+          Start Indexing
+        </button>
+
+        <div id="loader" style="display: none">
+          <div class="spinner"></div>
+          <p>Processing images...</p>
+        </div>
+
+        <div id="progress">
+          <p>Indexing in progress...</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+  </body>
+</html>
