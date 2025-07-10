@@ -3,83 +3,161 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Design Search</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}"
-    />
+    <title>Design Search - Home</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .upload-area {
+        border: 2px dashed #ccc;
+        border-radius: 10px;
+        width: 100%;
+        height: 200px;
+        text-align: center;
+        padding: 20px;
+        margin: 20px 0;
+        transition: border-color 0.3s;
+      }
+      .upload-area:hover {
+        border-color: #007bff;
+      }
+      .upload-area.dragover {
+        border-color: #007bff;
+        background-color: #f0f8ff;
+      }
+      .form-group {
+        margin: 20px 0;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .btn {
+        background: #007bff;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 10px 5px;
+      }
+      .btn:hover {
+        background: #0056b3;
+      }
+      .btn-secondary {
+        background: #6c757d;
+      }
+      .btn-secondary:hover {
+        background: #5a6268;
+      }
+      .nav-bar {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .nav-bar a {
+        margin: 0 10px;
+        color: #007bff;
+        text-decoration: none;
+      }
+    </style>
   </head>
   <body>
+    <div class="nav-bar">
+      <a href="/">← Back to Index</a> | <a href="/search">Search</a> |
+      <a href="/indexing">Index Images</a>
+    </div>
+
     <div class="container">
-      <h1>Design Search</h1>
-      <p>Upload a design to find similar images</p>
+      <h1>🎨 Design Search</h1>
+      <p>Upload a design to find similar images in the dataset</p>
 
       <form
+        id="uploadForm"
         action="/search"
-        method="POST"
+        method="post"
         enctype="multipart/form-data"
-        class="upload-form"
       >
-        <div class="upload-wrapper">
-          <div class="upload-area">
-            <label for="upload-file" class="upload-label">
-              <p>Drop image here</p>
-              <p>or click to browse</p>
-            </label>
-            <input
-              type="file"
-              id="upload-file"
-              name="file"
-              accept="image/*"
-              required
-            />
-          </div>
+        <div class="upload-area" id="uploadArea">
+          <p>Drop image here or click to browse</p>
+          <input
+            type="file"
+            id="fileInput"
+            name="file"
+            accept="image/*"
+            required
+            style="display: none"
+          />
+          <p id="fileName" style="margin-top: 10px; color: #666"></p>
         </div>
 
-        <div id="file-info">
-          <p>No file selected</p>
-        </div>
-
-        <div class="limit-wrapper">
-          <label for="limit" class="limit-label"
-            >Number of Similar Images</label
-          >
+        <div class="form-group">
+          <label for="limit">Number of Similar Images:</label>
           <input
             type="number"
             id="limit"
             name="limit"
-            value="5"
             min="1"
-            max="20"
-            class="limit-input"
+            max="50"
+            value="10"
           />
         </div>
 
-        <div class="button-group">
-          <button type="submit" class="search-button">🔍 Search</button>
-          <button
-            type="button"
-            onclick="location.href='/index'"
-            class="index-button"
-          >
-            📂 Index Images
+        <div style="text-align: center">
+          <button type="submit" class="btn">
+            🔍 Search for Similar Images
           </button>
+          <a href="/indexing" class="btn btn-secondary">📂 Index New Images</a>
         </div>
       </form>
     </div>
 
-    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     <script>
-      document
-        .getElementById("upload-file")
-        .addEventListener("change", function (e) {
-          const fileInfo = document.getElementById("file-info");
-          if (e.target.files.length > 0) {
-            fileInfo.innerHTML = `<p>Selected: ${e.target.files[0].name}</p>`;
-          } else {
-            fileInfo.innerHTML = "<p>No file selected</p>";
-          }
-        });
+      const uploadArea = document.getElementById("uploadArea");
+      const fileInput = document.getElementById("fileInput");
+      const fileName = document.getElementById("fileName");
+
+      uploadArea.addEventListener("click", () => fileInput.click());
+
+      uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.classList.add("dragover");
+      });
+
+      uploadArea.addEventListener("dragleave", () => {
+        uploadArea.classList.remove("dragover");
+      });
+
+      uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("dragover");
+        fileInput.files = e.dataTransfer.files;
+        updateFileName();
+      });
+
+      fileInput.addEventListener("change", updateFileName);
+
+      function updateFileName() {
+        const file = fileInput.files[0];
+        fileName.textContent = file ? `Selected: ${file.name}` : "";
+      }
     </script>
   </body>
 </html>

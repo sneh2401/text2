@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index Images</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .progress-container {
+        background: #f8f9fa;
+        border-radius: 5px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+      .btn {
+        background: #28a745;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 10px 5px;
+      }
+      .btn:hover {
+        background: #218838;
+      }
+      .nav-bar {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .nav-bar a {
+        margin: 0 10px;
+        color: #007bff;
+        text-decoration: none;
+      }
+      .status {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .status.info {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        color: #0c5460;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav-bar">
+      <a href="/">← Back to Index</a> | <a href="/home">Home</a> |
+      <a href="/search">Search</a>
+    </div>
+
+    <div class="container">
+      <h1>📂 Index Images</h1>
+      <p>
+        This process will analyze all images in the dataset folder and create
+        feature vectors for similarity search.
+      </p>
+
+      <div class="progress-container">
+        <div id="status" class="status info">
+          <strong>Ready to Index</strong><br />
+          Click the button below to start processing images in the dataset
+          folder.
+        </div>
+
+        <div id="progress" style="display: none">
+          <strong>Processing images...</strong><br />
+          <div
+            style="
+              background: #e9ecef;
+              height: 20px;
+              border-radius: 10px;
+              margin: 10px 0;
+            "
+          >
+            <div
+              id="progressBar"
+              style="
+                background: #28a745;
+                height: 100%;
+                width: 0%;
+                border-radius: 10px;
+                transition: width 0.3s;
+              "
+            ></div>
+          </div>
+          <span id="progressText">Indexing in progress...</span>
+        </div>
+      </div>
+
+      <div style="text-align: center">
+        <button id="indexBtn" class="btn" onclick="startIndexing()">
+          🚀 Start Indexing
+        </button>
+        <button
+          id="updateBtn"
+          class="btn"
+          onclick="updateIndex()"
+          style="background: #ffc107; color: #212529"
+        >
+          🔄 Update Index
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function startIndexing() {
+        const statusDiv = document.getElementById("status");
+        const progressDiv = document.getElementById("progress");
+        const indexBtn = document.getElementById("indexBtn");
+
+        statusDiv.style.display = "none";
+        progressDiv.style.display = "block";
+        indexBtn.disabled = true;
+
+        fetch("/indexing", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.message) {
+              statusDiv.innerHTML =
+                "<strong>✅ Success!</strong><br>" + data.message;
+              statusDiv.className = "status info";
+              statusDiv.style.background = "#d4edda";
+              statusDiv.style.borderColor = "#c3e6cb";
+              statusDiv.style.color = "#155724";
+            } else {
+              statusDiv.innerHTML =
+                "<strong>❌ Error!</strong><br>" +
+                (data.error || "Unknown error occurred");
+              statusDiv.className = "status info";
+              statusDiv.style.background = "#f8d7da";
+              statusDiv.style.borderColor = "#f5c6cb";
+              statusDiv.style.color = "#721c24";
+            }
+            progressDiv.style.display = "none";
+            statusDiv.style.display = "block";
+            indexBtn.disabled = false;
+          })
+          .catch((error) => {
+            statusDiv.innerHTML =
+              "<strong>❌ Error!</strong><br>" + error.message;
+            statusDiv.style.display = "block";
+            progressDiv.style.display = "none";
+            indexBtn.disabled = false;
+          });
+      }
+
+      function updateIndex() {
+        fetch("/update_index")
+          .then((response) => response.json())
+          .then((data) => {
+            alert(data.message || data.error);
+          });
+      }
+    </script>
+  </body>
+</html>
